@@ -34,3 +34,11 @@ C:\Project\毕设\2.0\project\Project\bin\Newtonsoft.Json.xml
 C:\Project\毕设\2.0\project\Project\obj\Debug\Project.csprojResolveAssemblyReference.cache
 C:\Project\毕设\2.0\project\Project\obj\Debug\Project.dll
 C:\Project\毕设\2.0\project\Project\obj\Debug\Project.pdb
+C:\Project\毕设\P2\project\Project\bin\Project.dll.config
+C:\Project\毕设\P2\project\Project\bin\Project.dll
+C:\Project\毕设\P2\project\Project\bin\Project.pdb
+C:\Project\毕设\P2\project\Project\bin\Newtonsoft.Json.dll
+C:\Project\毕设\P2\project\Project\bin\Newtonsoft.Json.xml
+C:\Project\毕设\P2\project\Project\obj\Debug\Project.csprojResolveAssemblyReference.cache
+C:\Project\毕设\P2\project\Project\obj\Debug\Project.dll
+C:\Project\毕设\P2\project\Project\obj\Debug\Project.pdb

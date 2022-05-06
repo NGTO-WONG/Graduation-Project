@@ -172,7 +172,7 @@
                     <thead>
                         <tr>
                             <th>申报项目</th>
-                            <th>时间</th>
+                            <th>预约时间</th>
                             <th>申报金额</th>
                             <th>申报人</th>
                             <th>备注</th>
