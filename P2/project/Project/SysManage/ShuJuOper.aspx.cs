@@ -40,7 +40,7 @@ namespace Project.SysManage
                 ren.Text = dt.Rows[0]["ren"].ToString();
                 demo.Text = dt.Rows[0]["demo"].ToString();
                 state.Text = dt.Rows[0]["state"].ToString();
-                state2.Text = dt.Rows[0]["state2"].ToString();
+                //state2.Text = dt.Rows[0]["state2"].ToString();
             }
         }
 
@@ -86,46 +86,60 @@ namespace Project.SysManage
             {
                 JsonRootDto jsonRootDto = JsonConvert.DeserializeObject<JsonRootDto>(strJson);
                 StringBuilder strSql = new StringBuilder();
-
-                if (Common.RequestInt("id") <= 0)//添加
+                string str = @"select count(0) as result from ShuJu where xm='" + jsonRootDto.Xm + "' and CONVERT(varchar(10),sj)=CONVERT(varchar(10),'" + jsonRootDto.Sj + "') and ren='" + jsonRootDto.Ren + "'";
+                int checkResult = Convert.ToInt32(DB.ExecuteScalar(str));
+                if (checkResult == 0)
                 {
-                    strSql.Append("insert into ShuJu(");
-                    strSql.Append("xm,sj,ren,demo,state,userid,state2");
-                    strSql.Append(") values (");
-                    strSql.Append("'" + jsonRootDto.Xm + "','" + jsonRootDto.Sj + "'");
-                    strSql.Append(",'" + jsonRootDto.Ren + "','" + jsonRootDto.Demo + "','" + jsonRootDto.State + "','" + Convert.ToInt32(HttpContext.Current.Request.Cookies["logininfo"]["Id"]) + "','" + jsonRootDto.State2 + "') ");
-                    strSql.Append(";select @@identity");
-                }
-                else//修改
-                {
-                    strSql.Append("update ShuJu set ");
-                    strSql.Append(" xm = '" + jsonRootDto.Xm + "'");
-                    strSql.Append(" ,sj = '" + jsonRootDto.Sj + "'");
-                    //strSql.Append(" ,je = '" + je.Text + "'");
-                    strSql.Append(" ,ren = '" + jsonRootDto.Ren + "'");
-                    strSql.Append(" ,demo = '" + jsonRootDto.Demo + "'");
-                    strSql.Append(" ,state = '" + jsonRootDto.State + "'");
-                    strSql.Append(" ,state2 = '" + jsonRootDto.State2 + "'");
-                    strSql.Append(" where Id= " + Common.RequestInt("id"));
-                    strSql.Append(";select '" + Common.RequestInt("id") + "'");
-                }
-                string id = DB.ExecuteScalar(strSql.ToString());
-                if (id != null && id != "")
-                {
-                    string sql = "INSERT INTO dbo.ShuJu_Detail ( detailId, Id, detailName, detailValue, createDate ) VALUES ";
-                    foreach (ResItem item in jsonRootDto.Res)
+                    if (Common.RequestInt("id") <= 0)//添加
                     {
-                        sql += "(CONVERT(VARCHAR(50),NEWID()),'" + id + "','" + item.Name + "','" + item.Value + "',GETDATE()),";
+                        strSql.Append("insert into ShuJu(");
+                        strSql.Append("xm,sj,ren,demo,state,userid,state2");
+                        strSql.Append(") values (");
+                        strSql.Append("'" + jsonRootDto.Xm + "','" + jsonRootDto.Sj + "'");
+                        strSql.Append(",'" + jsonRootDto.Ren + "','" + jsonRootDto.Demo + "','" + jsonRootDto.State + "','" + Convert.ToInt32(HttpContext.Current.Request.Cookies["logininfo"]["Id"]) + "','" + jsonRootDto.State2 + "') ");
+                        strSql.Append(";select @@identity");
                     }
-                    DB.ExecuteSql(sql.TrimEnd(','));
+                    else//修改
+                    {
+                        strSql.Append("update ShuJu set ");
+                        strSql.Append(" xm = '" + jsonRootDto.Xm + "'");
+                        strSql.Append(" ,sj = '" + jsonRootDto.Sj + "'");
+                        //strSql.Append(" ,je = '" + je.Text + "'");
+                        strSql.Append(" ,ren = '" + jsonRootDto.Ren + "'");
+                        strSql.Append(" ,demo = '" + jsonRootDto.Demo + "'");
+                        strSql.Append(" ,state = '" + jsonRootDto.State + "'");
+                        strSql.Append(" ,state2 = '" + jsonRootDto.State2 + "'");
+                        strSql.Append(" where Id= " + Common.RequestInt("id"));
+                        strSql.Append(";select '" + Common.RequestInt("id") + "'");
+                    }
+                    string id = DB.ExecuteScalar(strSql.ToString());
+                    if (id != null && id != "")
+                    {
+                        string sql = "INSERT INTO dbo.ShuJu_Detail ( detailId, Id, detailName, detailValue, createDate ) VALUES ";
+                        foreach (ResItem item in jsonRootDto.Res)
+                        {
+                            sql += "(CONVERT(VARCHAR(50),NEWID()),'" + id + "','" + item.Name + "','" + item.Value + "',GETDATE()),";
+                        }
+                        DB.ExecuteSql(sql.TrimEnd(','));
+                    }
+                    return JsonConvert.SerializeObject(new
+                    {
+                        code = 0,
+                        count = 0,
+                        data = "保存成功",
+                        error = "",
+                    });
                 }
-                return JsonConvert.SerializeObject(new
+                else
                 {
-                    code = 0,
-                    count = 0,
-                    data = "保存成功",
-                    error = "",
-                });
+                    return JsonConvert.SerializeObject(new
+                    {
+                        code = 1,
+                        count = 0,
+                        data = "",
+                        error = "",
+                    });
+                }
             }
             catch (Exception ex)
             {
@@ -169,7 +183,7 @@ namespace Project.SysManage
                 string strSql = "";
                 foreach (ApprovalEntity item in entities)
                 {
-                    strSql += "UPDATE ShuJu_Detail SET state='" + item.State + "' WHERE detailId='" + item.Id + "';";
+                    strSql += "UPDATE ShuJu_Detail SET ApprovalMoney='" + item.AppMoney + "' WHERE detailId='" + item.Id + "';";
                 }
                 DB.ExecuteSql(strSql.TrimEnd(';'));
                 return JsonConvert.SerializeObject(new
@@ -289,6 +303,13 @@ namespace Project.SysManage
         /// </summary>
         [JsonProperty("orderBy")]
         public int OrderBy { get; set; }
+
+        /// <summary>
+        /// 同意金额
+        /// </summary>
+        [JsonProperty("appMoney")]
+        public string AppMoney { get; set; }
+
     }
     #endregion
 }

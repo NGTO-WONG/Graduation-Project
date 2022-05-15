@@ -38,18 +38,10 @@ namespace Project.SysManage
             {
                 CurrentPage = PagingHelper.getPage(PageCount);//当前页
                 rptList.DataSource = DB.GetListByPage("ShuJu", @"*,
-            CAST(
-            (SELECT COUNT(0)
+           (SELECT cast(sum(convert(decimal(18,0), detailValue)) as varchar(50))+'/'+cast(sum(convert(decimal(18,0), ApprovalMoney)) as varchar(50)) as cost
             FROM dbo.ShuJu_Detail
             WITH(NOLOCK)
-            WHERE ShuJu.Id = ShuJu_Detail.Id
-            AND ShuJu_Detail.state = '不同意') AS VARCHAR(10)) + '/' + CAST(
-            (SELECT COUNT(0)
-            FROM dbo.ShuJu_Detail
-            WITH(NOLOCK)
-            WHERE ShuJu.Id = ShuJu_Detail.Id
-
-            AND ShuJu_Detail.state = '同意') AS VARCHAR(10)) AS result", where, "Id", 1, PageSize, CurrentPage, out PageCount, out RecordCount);
+            WHERE ShuJu.Id = ShuJu_Detail.Id) AS cost", where, "Id", 1, PageSize, CurrentPage, out PageCount, out RecordCount);
                 rptList.DataBind();
                 ltlNull.Text = "";
             }
@@ -100,7 +92,7 @@ namespace Project.SysManage
         [WebMethod]
         public static string GetItemList(string strJson)
         {
-            string sql = "SELECT detailName,detailValue,state FROM dbo.ShuJu_Detail WHERE Id='" + strJson + "'";
+            string sql = "SELECT detailName,detailValue,state,ApprovalMoney FROM dbo.ShuJu_Detail WHERE Id='" + strJson + "'";
             DataTable dt = DB.getDataTable(sql);
             if (dt != null && dt.Rows.Count > 0)
             {

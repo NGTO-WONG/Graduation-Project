@@ -118,24 +118,29 @@
                             var html = '';
                             $.each(json.data, function (index, item) {
                                 Total += parseInt(item.detailValue);
-                                if (item.state == "同意") {
-                                    Actual += parseInt(item.detailValue);
-                                }
+                                Actual += parseInt(item.ApprovalMoney);
+                                
                                 html += '<div class="row">';
-                                html += '<div class="col-sm-6">';
+                                html += '<label class="col-sm-2 control-label" style="line-height:40px;">名称：</label>';
+                                html += '<div class="col-sm-2">';
                                 html += '<input type="text" class="form-control" value="' + item.detailName + '" readonly>';
                                 html += '</div>';
-                                html += '<div class="col-sm-6">';
+                                html += '<label class="col-sm-2 control-label" style="line-height:40px;">申请金额：</label>';
+                                html += '<div class="col-sm-2">';
                                 html += '<input type="text" class="form-control" value="' + item.detailValue + '" readonly>';
+                                html += '</div>';
+                                html += '<label class="col-sm-2 control-label" style="line-height:40px;">通过金额：</label>';
+                                html += '<div class="col-sm-2">';
+                                html += '<input type="text" class="form-control" value="' + item.ApprovalMoney + '" readonly>';
                                 html += '</div>';
                                 html += '</div>';
                             });
                             html += '<div class="row">';
-                            html += '<label class="col-sm-2 control-label" style="margin-top: 14px;">申请总额</label>';
+                            html += '<label class="col-sm-2 control-label" style="line-height:40px;">申请总额</label>';
                             html += '<div class="col-sm-4">';
                             html += '<input type="text" class="form-control" value="' + Total + '" readonly>';
                             html += '</div>';
-                            html += '<label class="col-sm-2 control-label" style="margin-top: 14px;">实际报销</label>';
+                            html += '<label class="col-sm-2 control-label" style="line-height:40px;">实际报销</label>';
                             html += '<div class="col-sm-4">';
                             html += '<input type="text" class="form-control" value="' + Actual + '" readonly>';
                             html += '</div>';
@@ -172,12 +177,12 @@
                     <thead>
                         <tr>
                             <th>申报项目</th>
-                            <th>预约时间</th>
+                            <th>时间</th>
                             <th>申报金额</th>
                             <th>申报人</th>
                             <th>备注</th>
                             <%--<th>初审结果</th>--%>
-                            <th>安排结果 失败/通过</th>
+                            <th>通过金额/申请金额</th>
                             <%if (mbGrade == 1 || mbGrade == 3)
                                 { %>
                             <th>操作</th>
@@ -194,7 +199,7 @@
                                     <td><%#Eval("ren")%></td>
                                     <td><%#Eval("demo")%></td>
                                     <%--<td><%#Eval("state")%></td>--%>
-                                    <td><a href="javascript:void(0);" data-toggle="modal" data-target="#myModal" onclick="LoadData(<%#Eval("Id") %>)"><%#Eval("result")%></a></td>
+                                    <td><a href="javascript:void(0);" data-toggle="modal" data-target="#myModal" onclick="LoadData(<%#Eval("Id") %>)"><%#Eval("cost")%></a></td>
                                     <%if (mbGrade == 1 || mbGrade == 3)
                                         { %>
                                     <td>
@@ -229,7 +234,7 @@
         <!-- Modal -->
         <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
             <div class="modal-dialog" role="document">
-                <div class="modal-content">
+                <div class="modal-content" style="width:688px;">
                     <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                         <h4 class="modal-title" id="myModalLabel">费用明细</h4>

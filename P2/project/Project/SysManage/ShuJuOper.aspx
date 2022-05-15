@@ -49,7 +49,9 @@
                                     ele.find("input[name='name']").val(item.detailName);
                                     ele.find("input[name='name']").attr("keyId", item.detailId);
                                     ele.find("input[name='value']").val(item.detailValue);
-                                    ele.find("select").val(item.state ||'未审计');
+                                    ele.find("input[name='ApprovalMoney']").val(item.ApprovalMoney);
+
+                                    //ele.find("select").val(item.state ||'未审计');
                                     $("#ibox").append(ele);
                                 });
                             }
@@ -91,7 +93,7 @@
                 var ren = $('#ren').val();//申报人
                 var demo = $("#demo").val();//备注
                 var state = $("#state").val();//初审审计
-                var state2 = $("#state2").val();//终审审计
+                var state2 = '';//$("#state2").val();//终审审计
                 var params =
                 {
                     xm,
@@ -114,6 +116,13 @@
                             alert('保存成功');
                             location.href = 'ShuJuManage.aspx';
                         }
+                        else if (json.code == 1) {
+                            alert('申报时间与已有预约冲突');
+                            return false;
+                        }
+                        else {
+                            alert('保存失败');
+                        }
                     },
                     error: function (ex) {
                         console.log('异常：', ex);
@@ -128,7 +137,12 @@
                     obj.id = $(item).find("input[name='name']").attr("keyId");
                     obj.name = $(item).find("input[name='name']").val();
                     obj.value = $(item).find("input[name='value']").val();
-                    obj.state = $(item).find("select").find("option:selected").val();
+                    /*obj.state = $(item).find("select").find("option:selected").val();*/
+                    obj.appMoney = $(item).find("input[name='ApprovalMoney']").val();//审批金额
+                    if (parseInt(obj.value) < parseInt(obj.appMoney)) {
+                        alert('同意金额不能大于申请金额');
+                        return false;
+                    }
                     obj.orderBy = index + 1;
                     if (obj.name) {
                         res.push(obj);
@@ -170,7 +184,7 @@
                 <div class="form-group">
                     <label class="col-sm-2 control-label padding_lr_0">申报时间</label>
                     <div class="col-sm-10">
-                        <asp:TextBox ID="sj" runat="server" CssClass="form-control Wdate" Width="220px" placeholder="请填写" onfocus="blur()" onclick="WdatePicker()" required></asp:TextBox>
+                        <asp:TextBox ID="sj" runat="server" CssClass="form-control Wdate" Width="220px" placeholder="请填写" onfocus="blur()" onclick="WdatePicker({dateFmt: 'yyyy-MM-dd'})" required></asp:TextBox>
                     </div>
                 </div>
                 <div class="form-group charge-list" id="initial">
@@ -210,13 +224,14 @@
                     </div>
                 </div>
                 <div class="form-group" style="display: none;">
-                    <label class="col-sm-2 control-label padding_lr_0">终审审计</label>
+                    <label class="col-sm-2 control-label padding_lr_0">同意金额</label>
                     <div class="col-sm-10">
-                        <asp:DropDownList ID="state2" runat="server" CssClass="form-control" Width="220px">
+                        <%-- <asp:DropDownList ID="state2" runat="server" CssClass="form-control" Width="220px">
                             <asp:ListItem>未审计</asp:ListItem>
                             <asp:ListItem>同意</asp:ListItem>
                             <asp:ListItem>不同意</asp:ListItem>
-                        </asp:DropDownList>
+                        </asp:DropDownList>--%>
+                        <input type="number" class="form-control" name="value" value="" placeholder="请填写同意金额" autocomplete="off" required />
                     </div>
                 </div>
                 <div class="form-group">
@@ -255,13 +270,14 @@
                             <%--<asp:TextBox ID="TextBox1" runat="server" class="form-control" placeholder="请填写费用金额"></asp:TextBox>--%>
                             <input type="number" class="form-control" name="value" value="" placeholder="请填写费用金额" autocomplete="off" required />
                         </div>
-                        <label class="col-sm-1  control-label">终审审计</label>
+                        <label class="col-sm-1  control-label">同意金额</label>
                         <div class="col-sm-2">
-                            <select class="form-control" name="ApprovalStatus">
+                            <%--<select class="form-control" name="ApprovalStatus">
                                 <option value="未审计">未审计</option>
                                 <option value="同意">同意</option>
                                 <option value="不同意">不同意</option>
-                            </select>
+                            </select>--%>
+                            <input type="number" class="form-control" name="ApprovalMoney" value="" placeholder="请填写同意金额" autocomplete="off" required />
                         </div>
                     </div>
                 </div>
