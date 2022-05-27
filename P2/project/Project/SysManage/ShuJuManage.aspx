@@ -119,7 +119,6 @@
                             $.each(json.data, function (index, item) {
                                 Total += parseInt(item.detailValue);
                                 Actual += parseInt(item.ApprovalMoney);
-                                
                                 html += '<div class="row">';
                                 html += '<label class="col-sm-2 control-label" style="line-height:40px;">名称：</label>';
                                 html += '<div class="col-sm-2">';
@@ -178,11 +177,11 @@
                         <tr>
                             <th>申报项目</th>
                             <th>时间</th>
-                            <th>申报金额</th>
+                            <%--<th>申报金额</th>--%>
                             <th>申报人</th>
                             <th>备注</th>
-                            <%--<th>初审结果</th>--%>
-                            <th>通过金额/申请金额</th>
+                            <th>审核状态</th>
+                            <th>申请金额/通过金额</th>
                             <%if (mbGrade == 1 || mbGrade == 3)
                                 { %>
                             <th>操作</th>
@@ -195,15 +194,17 @@
                                 <tr>
                                     <td><%#Eval("xm")%></td>
                                     <td><%#Eval("sj")%></td>
-                                    <td><%#Eval("je")%></td>
+                                    <%--<td><%#Eval("je")%></td>--%>
                                     <td><%#Eval("ren")%></td>
                                     <td><%#Eval("demo")%></td>
-                                    <%--<td><%#Eval("state")%></td>--%>
-                                    <td><a href="javascript:void(0);" data-toggle="modal" data-target="#myModal" onclick="LoadData(<%#Eval("Id") %>)"><%#Eval("cost")%></a></td>
+                                    <td><%#Eval("cost").ToString()==""?"未审核":"已审核"%></td>
+                                    <td>
+                                        <a href="javascript:void(0);" data-toggle="modal" data-target="#myModal" onclick="LoadData(<%#Eval("Id") %>)"><%#Eval("cost")%></a>
+                                    </td>
                                     <%if (mbGrade == 1 || mbGrade == 3)
                                         { %>
                                     <td>
-                                        <a href="ShuJuOper.aspx?id=<%#Eval("Id") %>"><span class="blue"><%#mbGrade==1?"终审":(mbGrade==2?"修改":"初审") %></span></a>&nbsp;
+                                        <a href="ShuJuOper.aspx?id=<%#Eval("Id") %>"><span class="blue"><%#mbGrade==1?"审核":(mbGrade==2?"修改":"初审") %></span></a>&nbsp;
                                 <asp:LinkButton ID="LinkButton1" runat="server" CommandArgument='<%#Eval("Id") %>' CommandName="del"
                                     class="red" OnClientClick="JavaScript:return confirm('确定要删除吗？')">删除</asp:LinkButton>
                                     </td>
